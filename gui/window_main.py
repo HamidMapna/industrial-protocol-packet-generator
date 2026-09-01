@@ -45,6 +45,38 @@ class MainWindow:
             foreground="#333333",
             font=("Segoe UI", 10)
         )
+        
+        style.configure(
+        "Connection.TLabelframe",
+        background="#D9EAF7",
+        foreground="#1F4E78",
+        font=("Segoe UI", 10, "bold")
+        )
+
+        style.configure(
+            "Connection.TLabelframe.Label",
+            background="#D9EAF7",
+            foreground="#1F4E78",
+            font=("Segoe UI", 10, "bold")
+        )
+
+        style.configure(
+            "Connection.TLabel",
+            background="#D9EAF7",
+            foreground="#333333",
+            font=("Segoe UI", 10)
+        )
+
+        style.configure(
+            "Connection.TEntry",
+            font=("Segoe UI", 10)
+        )
+
+        style.configure(
+            "Connection.TButton",
+            font=("Segoe UI", 10, "bold"),
+            padding=(10, 5)
+        )
 
         style.configure(
             "Protocol.TCombobox",
@@ -110,10 +142,139 @@ class MainWindow:
             "<<ComboboxSelected>>",
             self.on_protocol_selected
         )
+        
+        connection_frame = ttk.LabelFrame(
+            self.root,
+            text="Connection",
+            style="Connection.TLabelframe"
+        )
+        connection_frame.pack(
+            fill="x",
+            padx=10,
+            pady=(0, 15)
+        )
+
+        ttk.Label(
+            connection_frame,
+            text="Server IP:",
+            style="Connection.TLabel"
+        ).grid(
+            row=0,
+            column=0,
+            padx=(10, 5),
+            pady=10,
+            sticky="w"
+        )
+
+        self.server_ip_var = tk.StringVar(
+            value="192.168.42.185"
+        )
+
+        self.server_ip_entry = ttk.Entry(
+            connection_frame,
+            textvariable=self.server_ip_var,
+            width=20,
+            style="Connection.TEntry"
+        )
+        self.server_ip_entry.grid(
+            row=0,
+            column=1,
+            padx=5,
+            pady=10
+        )
+
+        ttk.Label(
+            connection_frame,
+            text="Server Port:",
+            style="Connection.TLabel"
+        ).grid(
+            row=0,
+            column=2,
+            padx=(20, 5),
+            pady=10,
+            sticky="w"
+        )
+
+        self.server_port_var = tk.StringVar(
+            value="2404"
+        )
+
+        self.server_port_entry = ttk.Entry(
+            connection_frame,
+            textvariable=self.server_port_var,
+            width=8,
+            style="Connection.TEntry"
+        )
+        self.server_port_entry.grid(
+            row=0,
+            column=3,
+            padx=5,
+            pady=10
+        )
+
+        self.connect_button = ttk.Button(
+            connection_frame,
+            text="Connect",
+            style="Connection.TButton",
+            command=self.on_connect
+        )
+        self.connect_button.grid(
+            row=0,
+            column=4,
+            padx=(20, 5),
+            pady=10
+        )
+
+        self.disconnect_button = ttk.Button(
+            connection_frame,
+            text="Disconnect",
+            style="Connection.TButton",
+            command=self.on_disconnect,
+            state="disabled"
+        )
+        self.disconnect_button.grid(
+            row=0,
+            column=5,
+            padx=5,
+            pady=10
+        )
+
+        self.connection_status_var = tk.StringVar(
+            value="Disconnected"
+        )
+
+        ttk.Label(
+            connection_frame,
+            textvariable=self.connection_status_var,
+            style="Connection.TLabel"
+        ).grid(
+            row=0,
+            column=6,
+            padx=(20, 10),
+            pady=10
+        )
 
     def on_protocol_selected(self, event):
         protocol = self.protocol_var.get()
         print(f"Selected protocol: {protocol}")
+        
+    def on_connect(self):
+        server_ip = self.server_ip_var.get()
+        server_port = self.server_port_var.get()
+
+        print(f"Connect to {server_ip}:{server_port}")
+
+        self.connection_status_var.set("Connected")
+        self.connect_button.config(state="disabled")
+        self.disconnect_button.config(state="normal")
+
+
+    def on_disconnect(self):
+        print("Disconnect")
+
+        self.connection_status_var.set("Disconnected")
+        self.connect_button.config(state="normal")
+        self.disconnect_button.config(state="disabled")    
 
     def run(self):
         self.root.mainloop()
